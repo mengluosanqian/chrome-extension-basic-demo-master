@@ -14,7 +14,9 @@
     "storage",
     "tabs",
     "tts",
-    "notifications"
+    "notifications", 
+    "activeTab",
+    "<all_urls>"
   ],
   "action": {
     "default_popup": "html/popup.html"
@@ -26,7 +28,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["js/jquery-3.6.0.min.js", "js/content.js"],
+      "js": ["js/jquery-3.6.0.min.js", "js/content.js", "js/screensort.js"],
       "run_at": "document_start"
     }
   ],
