@@ -19,7 +19,7 @@
     "<all_urls>"
   ],
   "action": {
-    "default_popup": "html/popup.html"
+    "default_popup": "html/screensort.html"
   },
   "background": {
     "service_worker": "js/background.js",
