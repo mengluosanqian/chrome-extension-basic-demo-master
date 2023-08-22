@@ -6,9 +6,42 @@ btn.onclick = function () {
         downloadFile(dataUrl, screensortFileName.value);
     });
 }
-// 文件地址
-const fileSite = document.querySelector('#fileSite');
-fileSite.value = 'D:\\myNode\\chrome-extension-basic-demo-master\\images\\screensort';
+
+// 截取局部区域
+const pathBtn = document.getElementById("pathScreensort");
+pathBtn.onclick = function (e) {
+    chrome.runtime.sendMessage({
+        info: '发送消息测试',
+        type: 'pathScreensort'
+    }, res => {
+        console.log('接收的消息', res);
+    })
+}
+
+// 在页面加载完成后注入JavaScript
+// chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+//     if (changeInfo.status == 'complete') {
+//         chrome.tabs.executeScript(tabId, {
+//             code: `
+//         // 在页面中创建按钮
+//         const button = document.createElement('button');
+//         button.innerHTML = '点击我修改页面内容';
+
+//         console.log(document,'sssssssssss')
+//         // 当按钮被点击时，修改页面内容
+//         button.addEventListener('click', function() {
+//           // 在这里添加修改页面内容的代码
+//           alert('aaaa')
+//         });
+  
+//         // 将按钮添加到页面中
+//         document.body.appendChild(button);
+//       `
+//         });
+//     }
+// });
+
+
 
 // 文件名称
 let screensortFileName = document.querySelector('#screensortFileName');
@@ -19,7 +52,7 @@ let pathScreensortFileName = document.querySelector('#pathScreensortFileName');
 pathScreensortFileName.value = 'pathScreensortFileName';
 
 // 下载文件
-function downloadFile(content, fileName) { 
+function downloadFile(content, fileName) {
     let aLink = document.createElement('a');
     let blob = base64ToBlob(content);
     //new Blob([content]);    

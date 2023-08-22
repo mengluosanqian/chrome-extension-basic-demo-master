@@ -16,6 +16,8 @@
     "tts",
     "notifications", 
     "activeTab",
+    "http://*/*", 
+    "https://*/*",
     "<all_urls>"
   ],
   "action": {
