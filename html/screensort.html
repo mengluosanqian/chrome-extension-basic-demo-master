@@ -8,10 +8,39 @@
 </head>
 
 <body>
-    <div class="screen">
-        <div>
-            <input id="fileSite">
-        </div>
+    <div id="screensort-menu" class="contextmenu screensort-menu">
+        <li id="screensort-outer">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                    <tr>
+                        <td style="width: 25px;">&nbsp;</td>
+                        <td class="menu-text"><input class="menu-text-btn" id="screensort" type="button" value="截取可见区域"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </li>
+        <li id="longScreensort-outer">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                    <tr>
+                        <td style="width: 25px;">&nbsp;</td>
+                        <td class="menu-text"><input class="menu-text-btn" id="longScreensort" type="button" value="截取滚动区域"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </li>
+        <li id="pathScreensortFileName-outer">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                    <tr>
+                        <td style="width: 25px;">&nbsp;</td>
+                        <td class="menu-text"><input class="menu-text-btn" id="pathScreensort" type="button" value="截取部分区域"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </li>
+    </div>
+    <!-- <div class="screen">
         <div class="top box">
             <div class="left">
                 <input id="screensort" type="button" value="截取可见区域">
@@ -37,7 +66,7 @@
                 <input id="pathScreensortFileName">
             </div>
         </div>
-    </div>
+    </div> -->
     <script src="../js/screensort.js"></script>
 </body>
 

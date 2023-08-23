@@ -14,3 +14,57 @@
 .right {
     flex: 1;
 }
+
+.screensort-menu {
+	height:160px;
+	width:__MSG_menuPopupWidth__px; 
+	border:0;
+  padding: 0px;
+  /* background-color: #EEE; */
+}
+
+.screensort-menu li {
+  background-color: transparent;
+	width:__MSG_menuPopupWidth__px; 
+	white-space: nowrap; 
+	height: 30px; 
+	padding: 0px; 
+	margin: 0px; 
+	display: block; 
+	cursor: default;
+ 	border: 0px solid blue;
+}
+
+.screensort-menu li:hover, .screensort-menu li:hover td {
+  background-color: #EEE; 
+  color: #000;
+}
+
+.screensort-menu li:hover.seperator {
+  background-color:transparent
+}
+
+.screensort-menu li.seperator {
+  height: 10px;
+}
+
+.screensort-menu li td.menu-text {
+  width: 100px; height: 30px; font-size: 14px;text-indent:0px; 
+}
+.screensort-menu li td.menu-text .menu-text-btn {
+    background-color: #fff;
+    color: #000;
+    border: 0px;
+}
+.screensort-menu li td.menu-text .menu-text-btn:hover {
+    background-color: #EEE; 
+    color: #000;
+}
+
+.screensort-menu li td.menu-icon-users {
+  background: transparent url(images/icon-users-black-small.png) center center no-repeat;
+}
+
+.screensort-menu li td.menu-icon-options {
+  background: transparent url(images/icon-options-small.png) center top no-repeat;
+}
