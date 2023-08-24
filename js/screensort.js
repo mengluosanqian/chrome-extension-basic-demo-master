@@ -3,7 +3,7 @@ const btn = document.getElementById("screensort");
 btn.onclick = function () {
     chrome.tabs.captureVisibleTab(null, {}, function (dataUrl) {
         console.log(dataUrl);
-        downloadFile(dataUrl, screensortFileName.value);
+        downloadFile(dataUrl, 'screensortFileName');
     });
 }
 
@@ -18,38 +18,15 @@ pathBtn.onclick = function (e) {
     })
 }
 
-// 在页面加载完成后注入JavaScript
-// chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-//     if (changeInfo.status == 'complete') {
-//         chrome.tabs.executeScript(tabId, {
-//             code: `
-//         // 在页面中创建按钮
-//         const button = document.createElement('button');
-//         button.innerHTML = '点击我修改页面内容';
-
-//         console.log(document,'sssssssssss')
-//         // 当按钮被点击时，修改页面内容
-//         button.addEventListener('click', function() {
-//           // 在这里添加修改页面内容的代码
-//           alert('aaaa')
-//         });
-  
-//         // 将按钮添加到页面中
-//         document.body.appendChild(button);
-//       `
-//         });
-//     }
-// });
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+    if (message && message.type && message.type === 'screen') {
+        downloadFile(message.dataUrl, 'screensortFileName');
+        sendResponse('截图完成')
+    }
+    
+});
 
 
-
-// 文件名称
-let screensortFileName = document.querySelector('#screensortFileName');
-screensortFileName.value = 'screensortFileName';
-let longScreensortFileName = document.querySelector('#longScreensortFileName');
-longScreensortFileName.value = 'longScreensortFileName';
-let pathScreensortFileName = document.querySelector('#pathScreensortFileName');
-pathScreensortFileName.value = 'pathScreensortFileName';
 
 // 下载文件
 function downloadFile(content, fileName) {
