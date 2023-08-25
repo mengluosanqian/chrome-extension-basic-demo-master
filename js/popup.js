@@ -1,75 +1,70 @@
-$(function () {
-  showHello();
-  showlogList();
+// 截取可见区域
+const btn = document.getElementById("screensort");
+btn.onclick = function () {
+    chrome.tabs.captureVisibleTab(null, {}, function (dataUrl) {
+        console.log(dataUrl);
+        downloadFile(dataUrl, 'screensortFileName');
+    });
+}
+
+// 截取局部区域
+const pathBtn = document.getElementById("pathScreensort");
+pathBtn.onclick = function (e) {
+    chrome.runtime.sendMessage({
+        info: '发送消息测试',
+        type: 'pathScreensort'
+    }, res => {
+        console.log('接收的消息', res);
+    })
+}
+
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+    if (message && message.type && message.type === 'screen') {
+        downloadFile(message.dataUrl, 'screensortFileName');
+        sendResponse('截图完成')
+    }
+
 });
 
-// 使用国际化语言展示Hello World(这里为了始终显示英文，所以_locales文件夹中的helloWorld中英文设置的一样)
-function showHello() {
-  const hello = chrome.i18n.getMessage("helloWorld");
-  $(".hello")[0]?.append(hello);
+
+
+// 下载文件
+function downloadFile(content, fileName) {
+    let aLink = document.createElement('a');
+    let blob = base64ToBlob(content);
+    //new Blob([content]);    
+    let evt = document.createEvent("HTMLEvents");
+    evt.initEvent("click", true, true);
+    //initEvent 不加后两个参数在FF下会报错  事件类型，是否冒泡，是否阻止浏览器的默认行为   
+    aLink.download = fileName;
+    aLink.href = URL.createObjectURL(blob);
+    aLink.click();
 }
 
-// 展示日志列表
-function showlogList() {
-  // 获取日志数据
-  chrome.storage.sync.get("logs").then((data) => {
-    if (data?.logs?.length) {
-      let innerHtml = '<p class="title">日志列表</p>';
-      data.logs.forEach((log) => {
-        innerHtml += `<div class="log" data-log="${log}"><div class="dot"></div><p>${log}</p><div class="btn"><button id="deleteBtn" data-log="${log}">X</button></div></div>`;
-      });
-      $(innerHtml).appendTo($("#logList"));
-      $("#logList").click(onClickList);
-    } else {
-      showNoLog();
+//下载base64图片    
+var base64ToBlob = function (code) {
+    let parts = code.split(';base64,');
+    let contentType = parts[0].split(':')[1];
+    let raw = window.atob(parts[1]);
+    let rawLength = raw.length;
+    let uInt8Array = new Uint8Array(rawLength);
+    for (let i = 0; i < rawLength; ++i) {
+        uInt8Array[i] = raw.charCodeAt(i);
     }
-  });
-}
-
-// 展示暂无日志的提示
-function showNoLog() {
-  const innerHtml =
-    '<span>暂无日志，您可以去<a id="react" href="https://react.docschina.org/">React中文官网</a>页面选中文字并点击鼠标右键添加日志</span>';
-  $(innerHtml).appendTo($("#logList"));
-  $("#react").click(() => {
-    chrome.tabs.create({ url: `https://react.docschina.org/` });
-  });
-}
-
-// 点击日志列表的回调
-function onClickList(e) {
-  const { target } = e;
-  if (target?.dataset?.log) {
-    const { log } = target.dataset;
-    deleteLog(log, (newLogs) => {
-      // 更改插件图标上徽标文字
-      chrome.action.setBadgeText({text: newLogs.length ? newLogs.length.toString() : ""});
-      // 修改页面显示
-      const children = $("#logList").children(".log");
-      for (let child of children) {
-        if (child?.dataset?.log === log) {
-          child.remove();
-          if (children.length === 1) {
-            $(".title")[0]?.remove();
-            showNoLog();
-          }
-          return;
-        }
-      }
+    return new Blob([uInt8Array], {
+        type: contentType
     });
-  }
-}
-
-// 删除日志
-function deleteLog(value, callback) {
-  // 获取日志数据
-  chrome.storage.sync.get("logs").then((data) => {
-    if (data?.logs?.length) {
-      const newLogs = data.logs.filter((log) => log !== value);
-      // 重新保存日志数据
-      chrome.storage.sync.set({ logs: newLogs }).then(() => {
-        callback(newLogs);
-      });
-    }
-  });
+};
+var extension = chrome.extension.getBackgroundPage();
+// 获取全部图片
+const getImageBtn = document.getElementById("getAllImage");
+getImageBtn.onclick = function () {
+    chrome.tabs.query({
+            'active': true,
+            'windowId': chrome.windows.WINDOW_ID_CURRENT
+        },
+        function (tabs) {
+          extension.clickAndGetAllImage({sourceType: 'from_popup'}, tabs[0]);
+        }
+    );
 }

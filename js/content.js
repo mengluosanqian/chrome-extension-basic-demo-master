@@ -1,45 +1,87 @@
 // 监听background页面发来的消息
-chrome.runtime.onMessage.addListener((request) => {
-  console.log("接收到background消息：", request);
-  switch (request.todo) {
-    case "addLog":
-      showAddLogModal(request.data);
-      break;
-    case "closeModal":
-      closeAddLogModal();
-      break;
-  }
-});
+// chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+//   switch (request.type) {
+//     case "display-all-images":
+//       addEleToPage();
+//       // sendResponse(generate_response(get_all_images()));
+//       break;
+//     default:
+//       sendResponse({});
+//       break;
+//   }
+// });
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 
-// 点击保存按钮的回调
-function onSave() {
-  const inputText = $("#input").val();
-  if (!inputText) {
-    alert("请先输入内容");
-    return;
+  　　alert(JSON.stringify(message)) //这里获取消息
+  
+  })
+
+function generate_response(imgs) {
+  return {
+    type: 'display-images',
+    imgs: imgs,
+    data: {
+      cookie: document.cookie, // 用于处理防盗链
+      title: document.title, // 用于显示默认标题
+      pageUrl: location.href // 用于保存来源地址
+    }
+  };
+}
+
+function get_all_images() {
+  var links = [];
+  var docs = [];
+  try {
+    docs = [].slice.apply(window.frames);
+    docs = docs.map(function (e) {
+      return e.document;
+    });
+  } catch (e) {
+    console.log("[content] error-> " + e);
+    docs = [];
   }
-  // 在content_scripts中只能使用部分API，所以将输入的内容交给background页面处理
-  chrome.runtime.sendMessage(chrome.runtime.id, {
-    todo: "saveLog",
-    data: inputText,
+  docs.push(document);
+  for (var i = 0; i < docs.length; i++) {
+    var images = get_document_images(docs[i]);
+    links = links.concat(images);
+  }
+
+  return links;
+}
+
+function get_document_images(doc) {
+  var imgs = doc.getElementsByTagName('img');
+  var links = [].slice.apply(imgs);
+  links = links.map(function (element) {
+    return {
+      src: element.src
+    };
   });
+
+  var all = document.all;
+  for (var i = 0; i != all.length; i++) {
+    var e = all[i];
+    if (e.nodeType == 1) {
+      var url = "";
+      if (e.currentStyle && e.currentStyle.backgroundImage) {
+        url = e.currentStyle.backgroundImage
+      } else if (e.style && e.style.backgroundImage) {
+        url = e.style.backgroundImage;
+      }
+      if (url != "" && /^url\(/.test(url)) {
+        url = url.replace(/^url\("?/, '').replace(/"?\)$/, '');
+        links.push({
+          src: url
+        });
+      }
+    }
+  }
+
+  return links;
 }
 
-// 打开添加日志弹窗
-function showAddLogModal(text) {
-  // 获取外部完整的图片URL
-  const image = chrome.runtime.getURL("images/icon.png");
-  const mask =
-    '<div id="mask" style="position: fixed;top: 0;bottom: 0;left: 0;right: 0;width: 100%;height: 100%;background-color: #333333;opacity: 0.8;z-index:9998" />';
-  const addLogModal = `<div id="modal" style="position: fixed;top: 50%;left: 50%;width: 400px;height: 200px;margin-left: -200px;margin-top: -100px;background-color: #ffffff;border-radius: 8px;z-index: 9999;display: flex;flex-direction: column;align-items: center;padding: 20px"><img src="${image}" alt="" width="60" height="60" style="border-radius: 4px"><input id="input" placeholder="请输入" required value="${text}" style="width: 320px;height: 46px;margin-top: 20px;border: 1px solid #000;border-radius: 4px;padding: 0 6px"><button id="save" style="width: 320px;height: 34px;margin-top: 20px;cursor: pointer;">保存</button></div>`;
-  $(mask).appendTo(document.body);
-  $(addLogModal).appendTo(document.body);
-  $("#mask").click(closeAddLogModal);
-  $("#save").click(onSave);
-}
-
-// 关闭添加日志弹窗
-function closeAddLogModal() {
-  $("#modal").remove();
-  $("#mask").remove();
+function addEleToPage() {  
+  let div = document.createElement('div');
+    div.innerHTML = '<p>这是一段文字</p>';
+    document.body.appendChild(div);
 }

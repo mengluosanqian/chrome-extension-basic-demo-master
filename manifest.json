@@ -1,5 +1,5 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "__MSG_appName__",
   "version": "1.0.0",
   "description": "__MSG_appDescription__",
@@ -14,36 +14,34 @@
     "storage",
     "tabs",
     "tts",
+    "downloads",
     "notifications", 
     "activeTab",
+    "background",
     "http://*/*", 
     "https://*/*",
+    "webRequest",
+    "webRequestBlocking",
     "<all_urls>"
   ],
-  "action": {
-    "default_popup": "html/screensort.html"
+  "browser_action" : {
+    "default_title" : "截图",
+    "default_icon"  : "images/icon.png",
+    "default_popup" : "html/popup.html"
   },
   "background": {
-    "service_worker": "js/background.js",
-    "type": "module"
+    "scripts": [ "js/background.js" ]
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["js/jquery-3.6.0.min.js", "js/content.js", "js/screensort.js"],
-      "run_at": "document_start"
-    }
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": ["images/*.png"],
-      "matches": ["<all_urls>"]
+      "matches": [ "<all_urls>" ],
+      "js": ["js/jquery-3.6.0.min.js", "js/content.js"],
+      "run_at": "document_end"
     }
   ],
   "options_ui": {
     "page": "html/options.html",
     "open_in_tab": true
   },
-  "default_locale": "zh_CN",
-  "homepage_url": "https://www.jianshu.com/p/9d8ddfe3403e"
+  "default_locale": "zh_CN"
 }
