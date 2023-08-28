@@ -10,12 +10,16 @@ btn.onclick = function () {
 // 截取局部区域
 const pathBtn = document.getElementById("pathScreensort");
 pathBtn.onclick = function (e) {
-    chrome.runtime.sendMessage({
-        info: '发送消息测试',
-        type: 'pathScreensort'
-    }, res => {
-        console.log('接收的消息', res);
-    })
+    chrome.tabs.query({
+            'active': true,
+            'windowId': chrome.windows.WINDOW_ID_CURRENT
+        },
+        function (tabs) {
+            extension.clickAndGetPathFrame({
+                sourceType: 'from_popup'
+            }, tabs[0]);
+        }
+    );
 }
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
@@ -64,7 +68,9 @@ getImageBtn.onclick = function () {
             'windowId': chrome.windows.WINDOW_ID_CURRENT
         },
         function (tabs) {
-          extension.clickAndGetAllImage({sourceType: 'from_popup'}, tabs[0]);
+            extension.clickAndGetAllImage({
+                sourceType: 'from_popup'
+            }, tabs[0]);
         }
     );
 }

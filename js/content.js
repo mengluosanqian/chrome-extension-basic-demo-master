@@ -1,20 +1,18 @@
-// 监听background页面发来的消息
-// chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-//   switch (request.type) {
-//     case "display-all-images":
-//       addEleToPage();
-//       // sendResponse(generate_response(get_all_images()));
-//       break;
-//     default:
-//       sendResponse({});
-//       break;
-//   }
-// });
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
-
-  　　alert(JSON.stringify(message)) //这里获取消息
-  
-  })
+chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
+  switch (request.type) {
+    case "display-all-images":
+      insertDomToFrame();
+      sendResponse({});
+      break;
+    case "get-path-frame":
+      insertDomToFrame();
+      sendResponse({});
+      break;
+    default:
+      sendResponse({});
+      break;
+  }
+});
 
 function generate_response(imgs) {
   return {
@@ -80,8 +78,22 @@ function get_document_images(doc) {
   return links;
 }
 
-function addEleToPage() {  
+function addEleToPage() {
   let div = document.createElement('div');
-    div.innerHTML = '<p>这是一段文字</p>';
-    document.body.appendChild(div);
+  div.innerHTML = '<p>这是一段文字</p>';
+  document.body.appendChild(div);
+}
+
+function insertDomToFrame() {
+  let innerDom = document.createElement('div');
+  innerDom.id = 'insert-set-dom';
+  innerDom.style.width = '100vw';
+  innerDom.style.height = '100vh';
+  innerDom.style.position = 'fixed';
+  innerDom.style.top = 0;
+  innerDom.style.left = 0;
+  innerDom.style.display = 'block';
+  innerDom.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+  innerDom.style.zIndex = 2000000;
+  document.querySelector('html').prepend(innerDom);
 }

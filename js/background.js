@@ -1,15 +1,3 @@
-chrome.runtime.onMessage.addListener(handleMessage);
-async function handleMessage(request, sender, sendResponse) {
-  if (request && request.type === 'pathScreensort') {
-    sendResponse('来自background的消息')
-    const tabId = await getCurrentTabId();
-    chrome.tabs.sendMessage(tabId, "局部截图:", function (res) {
-      console.log('background info:', res);
-    })
-    return true
-  }
-}
-
 // 获取当前tabId
 function getCurrentTabId() {
   return new Promise((resolve, reject) => {
@@ -81,24 +69,17 @@ function download_image(url, view, folder, pageurl) {
 
 
 function clickAndGetAllImage(info, tab) {
-  // console.log(chrome.tabs,'chrome.tabs');
-  // chrome.tabs.sendMessage(tab.id, {
-  //   type: "display-all-images"
-  // }, function (res) {
-  //   res = res || {};
-  //   console.log();
-  // });
-  chrome.tabs.query({
-    active: true,
-    currentWindow: true
-  }, function (tabs) {
-    console.log(tabs);
-    chrome.tabs.sendMessage(tabs[0].id, {
-      type: "display-all-images"
-    }, function (response) {
+  chrome.tabs.sendRequest(tab.id, { type : "display-all-images"}, function(res) {
+    res = res || {};
+    res.track_from = info.track_from;
+  });
 
+}
 
-    });
-  })
+function clickAndGetPathFrame(info, tab) {
+  chrome.tabs.sendRequest(tab.id, { type : "get-path-frame"}, function(res) {
+    res = res || {};
+    res.track_from = info.track_from;
+  });
 
 }
