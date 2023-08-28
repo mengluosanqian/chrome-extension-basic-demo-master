@@ -95,5 +95,31 @@ function insertDomToFrame() {
   innerDom.style.display = 'block';
   innerDom.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
   innerDom.style.zIndex = 2000000;
+  let closeBtn = addCloseBtn();
+  innerDom.prepend(closeBtn);
   document.querySelector('html').prepend(innerDom);
+}
+
+function addCloseBtn() {
+  let closeBtn = document.createElement('input');
+  closeBtn.type = 'button';
+  closeBtn.id = 'lw-close-btn';
+  closeBtn.style.position = 'fixed';
+  closeBtn.style.top = '24px';
+  closeBtn.style.right = '36px';
+  closeBtn.value = 'close';
+  closeBtn.style.zIndex = 2000000;
+  closeBtn.style.display = 'block';
+  closeBtn.style.backgroundColor = '#EEE';
+  closeBtn.onclick = function (e) {
+    closeDom();
+  }
+  return closeBtn;
+}
+
+function closeDom() {
+  let dom = document.querySelector('#insert-set-dom');
+  let close = document.querySelector('#lw-close-btn');
+  dom.style.display = 'none';
+  close.style.display = 'none';
 }
